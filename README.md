@@ -6,9 +6,11 @@ Originally written by Grubhub engineers to convert the consumer web application 
 You are also encouraged to hack at the conversion script to get the results you need.
 
 ## Getting started ##
-* git clone git@github.com:erictsai6/angularjs-to-angular.git
+* git clone git@github.com:chipallen2/angularjs-to-angular.git
 * cd angularjs-to-angular
 * npm install
+
+## Testing the Tool ##
 * npm run components
     * This will convert the test component files under tests/data/ and output to upgrade/
 * npm run services
