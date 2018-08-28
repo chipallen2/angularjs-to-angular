@@ -6,38 +6,46 @@ Originally written by Grubhub engineers to convert the consumer web application 
 You are also encouraged to hack at the conversion script to get the results you need.
 
 ## Getting started ##
-* git clone git@github.com:chipallen2/angularjs-to-angular.git
-* cd angularjs-to-angular
-* npm install
+Run the following to install the project.
+
+```
+git clone git@github.com:chipallen2/angularjs-to-angular.git
+cd angularjs-to-angular
+npm install
+```
+
 
 ## Testing the Tool ##
-* npm run components
+* Run > `npm run components`
     * This will convert the test component files under tests/data/ and output to upgrade/
-* npm run services
+* Run > `npm run services`
     * This will convert the test service files under tests/data/ and output to upgrade/
-* npm run serviceSpecs
+* Run > `npm run serviceSpecs`
     * This will convert the test service spec files under tests/data/ and output to upgrade/
-* npm run templates
+* Run > `npm run templates`
     * This will convert the test template files under tests/data/ and output to upgrade/
-* npm test
+* Run > `npm test`
     * Executes the unit tests using AvaJS
 
 ## Running Real Code ##
 You will make an npm link from the cli folder to your project. Then run the CLI commands on the files you want. Files are written to the upgrade directory.
 
-* cd angularjs-to-angular
-* npm link
-* cd <TO YOUR APPLICATION DIRECTORY>
-* npm link angularjs-to-angular
-* ./node_modules/.bin/angularjs-to-angular -c="src/**/*.component.ts"
-* Your new source code will be under the upgrade directory.
+```
+cd angularjs-to-angular
+npm link
+cd <TO YOUR APPLICATION DIRECTORY>
+npm link angularjs-to-angular
+./node_modules/.bin/angularjs-to-angular -c="src/**/*.component.ts"
+```
+
+Your new source code will be under the upgrade directory.
 
 
 ## How to develop with this script ##
 The entry point of the script is under src/index.js where it will take commandline arguments that will accept blobs for component, service, service spec and template conversions.  Each specific tool can be found under src/tools/ file.
 
 ### Components ###
-src/tools/process-components.js
+**src/tools/process-components.js**
 
 #### Places to hack ####
 * imports.get() - reads the AST and based on the code determines what should be imported at the top of the new file
@@ -47,7 +55,7 @@ src/tools/process-components.js
 * updateReferences - Useful for updating the import references to maintain consistent import paths.
 
 ### Services ###
-src/tools/process-services.js
+**src/tools/process-services.js**
 
 #### Places to hack ####
 * imports.get() - reads the AST and based on the code determines what should be imported at the top of the new file
@@ -57,7 +65,7 @@ src/tools/process-services.js
 
 
 ### Templates ###
-src/lib/process-template.js
+**src/lib/process-template.js**
 
 #### Places to hack ####
 * The first section revolves around using cheerio (similar to JQuery) to search for specific elements and add or remove attributes
