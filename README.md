@@ -1,12 +1,9 @@
 # angularjs-to-angular
 CLI that takes in angularjs files and outputs angular.
 
-Originally written by Grubhub engineers to convert the consumer web application from AngularJS to Angular.  This will not work for you out of the box because every AngularJS application is unique.  We've provided the tools necessary so you can put some sample files and unit test them.
+## Getting Started ##
 
-You are also encouraged to hack at the conversion script to get the results you need.
-
-## Getting started ##
-Run the following to install the project.
+### 1 - Run the following to install the project. ###
 
 ```
 git clone git@github.com:chipallen2/angularjs-to-angular.git
@@ -14,35 +11,27 @@ cd angularjs-to-angular
 npm install
 ```
 
-
-## Testing the Tool ##
-* Run > `npm run components`
-    * This will convert the test component files under tests/data/ and output to upgrade/
-* Run > `npm run services`
-    * This will convert the test service files under tests/data/ and output to upgrade/
-* Run > `npm run serviceSpecs`
-    * This will convert the test service spec files under tests/data/ and output to upgrade/
-* Run > `npm run templates`
-    * This will convert the test template files under tests/data/ and output to upgrade/
-* Run > `npm test`
-    * Executes the unit tests using AvaJS
-
-## Running Real Code ##
-You will make an npm link from the cli folder to your project. Then run the CLI commands on the files you want. Files are written to the upgrade directory.
+### 2 - Link this project to your AngularJS app ###
+You will make an npm link from the cli folder to your angular.js project. 
 
 ```
 cd angularjs-to-angular
 npm link
-cd <TO YOUR APPLICATION DIRECTORY>
+cd <TO YOUR ANGULAR.JS APP DIRECTORY>
 npm link angularjs-to-angular
-./node_modules/.bin/angularjs-to-angular -c="src/**/*.component.ts"
 ```
 
-Your new source code will be under the upgrade directory.
+Now in your angular.js app run commands and your new source code will be available the upgrade directory.
 
+Example:
 
-## How to develop with this script ##
-The entry point of the script is under src/index.js where it will take commandline arguments that will accept blobs for component, service, service spec and template conversions.  Each specific tool can be found under src/tools/ file.
+`./node_modules/.bin/angularjs-to-angular -c="src/**/*.component.ts"`
+
+## How It Works ##
+The entry point of the script is under src/index.js where it will take commandline arguments that will accept blobs for component, service, service spec and template conversions.  
+
+Each specific tool can be found under a `src/tools/proces-[****].js` file.
+
 
 ### Components ###
 **src/tools/process-components.js**
@@ -53,6 +42,7 @@ The entry point of the script is under src/index.js where it will take commandli
 * removeFromConstructor - takes in a list of arguments that you want to remove from the constructor because they no longer exist in Angular
 * processStringReplacements - Has a large 2 x N array with the first column being a REGEX match and the second column representing what you want to replace it with.
 * updateReferences - Useful for updating the import references to maintain consistent import paths.
+
 
 ### Services ###
 **src/tools/process-services.js**
@@ -70,3 +60,16 @@ The entry point of the script is under src/index.js where it will take commandli
 #### Places to hack ####
 * The first section revolves around using cheerio (similar to JQuery) to search for specific elements and add or remove attributes
 * The second section is a series of REGEX replace statements
+
+
+## Testing the Tool ##
+* Run > `npm run components`
+    * This will convert the test component files under tests/data/ and output to upgrade/
+* Run > `npm run services`
+    * This will convert the test service files under tests/data/ and output to upgrade/
+* Run > `npm run serviceSpecs`
+    * This will convert the test service spec files under tests/data/ and output to upgrade/
+* Run > `npm run templates`
+    * This will convert the test template files under tests/data/ and output to upgrade/
+* Run > `npm test`
+    * Executes the unit tests using AvaJS
