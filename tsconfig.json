@@ -3,15 +3,15 @@
         "target": "es5",
         "lib": ["es2017", "dom"],
         "module": "commonjs",
-        "outDir": "./",
-        "sourceMap": false,
+        "outDir": "./dist",
+        "strict": true,
         "typeRoots": ["node_modules/@types"],
-        "baseUrl": "./",
-        "declaration": false,
+        "declaration": true,
         "moduleResolution": "node",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "allowSyntheticDefaultImports": true
     },
-    "include": ["**.ts"]
+    "include": ["src"],
+    "exclude": ["node_modules", "tests"]
 }

@@ -6,7 +6,10 @@ CLI that takes in angularjs files and outputs angular.
 ### 1 - Run the following to install the project. ###
 
 ```
-git clone git@github.com:chipallen2/angularjs-to-angular.git cd angularjs-to-angular npm install
+git clone git@github.com:chipallen2/angularjs-to-angular.git 
+cd angularjs-to-angular 
+npm install
+npm i -g npx
 ```
 
 ### 2 - Link this project to your AngularJS app ###
@@ -15,15 +18,19 @@ You will make an npm link from the cli folder to your
 angular.js project.
 
 ```
-cd angularjs-to-angular npm link cd to the heimdall app folder (cd
-all/ui-heimdall) npm link angularjs-to-angular
+cd angularjs-to-angular 
+npm link 
+cd all/ui-heimdall
+npm link angularjs-to-angular
 ```
 
-Now in your angular.js app run commands and your
-new source code will be available the upgrade directory.
-src/main/webapp/app/heimdall/setup/endpoints/endpoints.js
+Now in your angular.js app run ts-node commands and your new source code will be available the upgrade directory
 
-Example: `./node_modules/.bin/angularjs-to-angular -c="src/**/*.component.ts"`
+Example: `npx ts-node ./node_modules/.bin/angularjs-to-angular -p="src/main/webapp/app/heimdall/setup/endpoints/endpoints.js" -n="/setup/endpoints"`
+Example: `npx ts-node ./node_modules/angularjs-to-angular/index.ts -p="src/main/webapp/app/heimdall/setup/endpoints/endpoints.js" -n="/setup/endpoints"`
+./node_modules/.bin/angularjs-to-angular -p="src/main/webapp/app/heimdall/setup/endpoints/endpoints.js" -n="/setup/endpoints"
+npm link angularjs-to-angular && ./node_modules/.bin/angularjs-to-angular -p="src/main/webapp/app/heimdall/setup/endpoints/endpoints.js" -n="/setup/endpoints"
+
 
 ## How It Works ##
 

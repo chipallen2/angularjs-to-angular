@@ -8,7 +8,7 @@ export class Route extends IAngularType {
 
     // private controller: Controller;
     // private template: Template;
-    private routeName: string;
+    private routeName: string = '';
 
     public setRouteName(name: string): void {
         this.routeName = name;

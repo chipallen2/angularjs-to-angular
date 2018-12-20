@@ -1,101 +1,51 @@
 #!/usr/bin/env node
 
-// import glob from'glob';
 // import * as inquirer from 'inquirer';
-// import * as path from 'path';
-// import './polyfills';
-//
-// const argv = require('yargs') // Reference -> https://github.com/yargs/yargs
-//     .option('components', {
-//         alias: 'c',
-//         describe: 'Processes the components. Provide a glob in quotes.',
-//     })
-//     .option('services', {
-//         alias: 's',
-//         describe: 'Processes the services. Provide a glob in quotes.',
-//     })
-//     .option('serviceSpecs', {
-//         describe: 'Processes the non component spec files',
-//     })
-//     .option('templates', {
-//         alias: 't',
-//         describe: 'Processes the templates. Provide a glob in quotes.',
-//     })
-//     .option('routes', {
-//         alias: 'r',
-//         describe: 'Processes an entire route page (upgrades the html, component, and services). Provide a glob to the file with the route in quotes.',
-//     })
-//     .option('routeName', {
-//         alias: 'n',
-//         describe: 'Use along with the -r flag to specify the route name to upgrade.',
-//     })
-//     .help('h')
-//     .argv;
+import chalk from 'chalk';
+import glob from'glob';
+import * as path from 'path';
+
+import { CliArguments } from './interfaces/cliArguments';
+import './polyfills';
+import { Route } from './types/route';
+
+const argv: CliArguments = require('yargs')
+    .option('path', {
+        alias: 'p',
+        describe: 'Provide a glob to the file path with the route in quotes.',
+    })
+    .option('name', {
+        alias: 'n',
+        describe: 'Specify the route name to upgrade in quotes',
+    })
+    .help('h')
+    .argv;
+
+if (!argv.path || !argv.name) {
+    console.log(chalk.red('You must pass the file path and the name of the route to be converted'));
+    console.log(chalk.red('Example: -p="/some/path" -n="/things/thing"'));
+    process.exit(1);
+}
+
+// Save for later if we need to prompt
+// inquirer.prompt([{ name: 'something', message: 'Do you like this' }])
+//     .then((answer) => {
+//         console.log(answer.something);
+//         process.exit(9);
+//     });
 
 /* Process A Whole Route including the Component and Template */
-// if (argv.routes) {
-//     inquirer.prompt([{ name: 'something', message: 'Do you like this' }])
-//         .then((answer) => {
-//             console.log(answer);
-//             process.exit(0);
-//         });
-//     const tool = require('./tools/process-routes');
-//     const files = glob.sync(path.join(process.cwd(), argv.routes));
-//     tool(files, argv.routeName);
-//     process.exit(0);
-// }
+const filePaths: string[] = glob.sync(path.join(process.cwd(), argv.path));
 
-// /* Process Components */
-// if (argv.components) {
-//     const globPath: string = path.join(process.cwd(), argv.components);
-//     processComponents(globPath);
-//     process.exit(0);
-// }
-//
-// /* Process Services */
-// if (argv.services) {
-//     const globPath = path.join(process.cwd(), argv.services);
-//     processServices(globPath);
-//     process.exit(0);
-// }
-//
-// /* Process Non Component Spec Files */
-// if(argv.serviceSpecs) {
-//     const globPath = path.join(process.cwd(), argv.serviceSpecs);
-//     processServiceSpecs(globPath);
-//     process.exit(0);
-// }
-//
-// /* Process Templates */
-// if (argv.templates) {
-//     const globPath = path.join(process.cwd(), argv.templates);
-//     processTemplates(globPath);
-//     process.exit(0);
-// }
+filePaths.forEach((filePath: string, index: number) => {
+    const routeName: string = argv.name[index];
 
-console.log('No arguments provided, nothing converted');
+    // @ts-ignore
+    const route: Route = (new Route(filePath));
+    route.setRouteName(routeName);
+    route
+        .convert()
+        .toFile();
+});
+
 process.exit(0);
-
-// function processComponents(globPath: string) {
-//     const tool = require('./tools/process-components');
-//     const files = glob.sync(globPath);
-//     tool(files);
-// }
-//
-// function processServices(globPath: string) {
-//     const tool = require('./tools/process-services');
-//     const files = glob.sync(globPath);
-//     tool(files);
-// }
-//
-// function processServiceSpecs(globPath: string) {
-//     const tool = require('./tools/process-service-specs');
-//     const files = glob.sync(globPath);
-//     tool(files);
-// }
-//
-// function processTemplates(globPath: string) {
-//     const tool = require('./tools/process-templates');
-//     const files = glob.sync(globPath);
-//     tool(files);
-// }

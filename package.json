@@ -2,15 +2,22 @@
     "name": "angularjs-to-angular",
     "version": "1.0.0",
     "description": "cli that takes in angularjs files and outputs angular",
-    "main": "src/index.ts",
+    "main": "dist/index.js",
+    "bin": "dist/index.js",
+    "types": "dist/index.d.ts",
     "scripts": {
-        "testComponents": "node src/index.js -c 'tests/data/**/*component.{js,ts}'",
-        "testTemplates": "node src/index.js -t 'tests/data/**/*.tpl.html'",
-        "testServices": "node src/index.js -s 'tests/data/**/!(*routes|*module|*component|*spec).{js,ts}'",
-        "testServiceSpecs": "node src/index.js --serviceSpecs 'tests/data/**/*{service,model}.{js,ts}'",
+        "build": "tsc",
+        "testComponents": "node src/index.ts -c 'tests/data/**/*component.{js,ts}'",
+        "testTemplates": "node src/index.ts -t 'tests/data/**/*.tpl.html'",
+        "testServices": "node src/index.ts -s 'tests/data/**/!(*routes|*module|*component|*spec).{js,ts}'",
+        "testServiceSpecs": "node src/index.ts --serviceSpecs 'tests/data/**/*{service,model}.{js,ts}'",
         "test": "ava",
-        "lint": "tslint -t codeFrame -p ./tslint.json --fix && ./node_modules/.bin/prettier --write \"{/src,.}/*.{json,ts}\""
+        "lint": "tslint -t codeFrame -p ./tslint.json --fix && ./node_modules/.bin/prettier --write \"{/src,.}/*.{json,ts}\"",
+        "prepare": "npm run build"
     },
+    "files": [
+        "dist/**/*"
+    ],
     "repository": {
         "type": "git",
         "url": "git+https://github.com/chipallen2/angularjs-to-angular"
@@ -30,24 +37,27 @@
         "angular",
         "converter"
     ],
-    "author": "Team Umami",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/erictsai6/angularjs-to-angular/issues"
-    },
+    "author": "GHX",
+    "license": "All rights reserved",
     "homepage": "https://github.com/chipallen2/angularjs-to-angular#readme",
     "dependencies": {
         "@phenomnomnominal/tsquery": "3.0.0",
-        "@types/inquirer": "0.0.43",
-        "ava": "0.19.1",
         "chalk": "2.4.1",
         "cheerio": "1.0.0-rc.2",
+        "glob": "7.1.2",
+        "inquirer": "6.2.1",
+        "npm": "^6.5.0",
+        "typescript": "3.2.2",
+        "yargs": "8.0.2"
+    },
+    "devDependencies": {
+        "@types/glob": "7.1.1",
+        "@types/inquirer": "0.0.43",
+        "ava": "0.19.1",
         "core-js": "2.6.1",
         "eslint": "3.19.0",
-        "glob": "7.1.2",
         "handlebars": "4.0.11",
         "husky": "1.3.0",
-        "inquirer": "6.2.1",
         "js-beautify": "1.7.5",
         "lint-staged": "7.3.0",
         "lodash.sortby": "4.7.0",
@@ -61,10 +71,6 @@
         "tslint": "5.11.0",
         "tslint-config-ghx": "1.0.4",
         "tsutils": "3.5.1",
-        "typescript": "3.2.2",
-        "typescript-formatter": "5.2.0",
-        "yargs": "8.0.2"
-    },
-    "devDependencies": {},
-    "bin": "src/index.js"
+        "typescript-formatter": "5.2.0"
+    }
 }

@@ -4,6 +4,7 @@ npm-debug.log
 results.ts
 .tmp
 upgrade/
+/dist
 
 .vscode
 .dev
