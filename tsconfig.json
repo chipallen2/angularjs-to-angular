@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "lib": ["es2017", "dom"],
+        "module": "commonjs",
+        "outDir": "./",
+        "sourceMap": false,
+        "typeRoots": ["node_modules/@types"],
+        "baseUrl": "./",
+        "declaration": false,
+        "moduleResolution": "node",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true
+    },
+    "include": ["**.ts"]
+}
