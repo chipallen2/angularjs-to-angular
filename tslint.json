@@ -1,6 +1,10 @@
 {
     "defaultSeverity": "error",
     "extends": "tslint-config-ghx",
-    "rules": { "no-console": false },
+    "rules": {
+        "no-console": false,
+        "max-line-length": false,
+        "no-unused-variable": { "severity": "warning" }
+    },
     "linterOptions": { "exclude": ["upgrade/**", "tests/**"] }
 }

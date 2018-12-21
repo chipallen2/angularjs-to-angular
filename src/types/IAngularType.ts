@@ -1,4 +1,4 @@
-import * as tsquery from '@phenomnomnominal/tsquery';
+import * as q from '@phenomnomnominal/tsquery';
 import * as ts from 'typescript';
 import { FileUtil } from '../utils/fileUtil';
 
@@ -11,8 +11,8 @@ export abstract class IAngularType {
     constructor(filePath: string) {
         this.filePath = filePath;
         // @ts-ignore
-        this.originalAst = tsquery.ast(FileUtil.toCode(filePath));
-        this.ast = { ...this.originalAst } ;
+        this.originalAst = q.tsquery.ast(FileUtil.toCode(filePath));
+        this.ast = q.tsquery.ast(FileUtil.toCode(filePath)) ;
     }
 
     /**

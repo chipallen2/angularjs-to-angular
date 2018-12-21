@@ -1,4 +1,4 @@
 export interface CliArguments {
-    path: string;
-    name: string;
+    path: string[];
+    name: string[];
 }

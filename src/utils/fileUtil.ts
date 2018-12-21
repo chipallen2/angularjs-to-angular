@@ -4,12 +4,12 @@ import * as path from 'path';
 export class FileUtil {
 
     public static toCode(filePath: string): string {
-        return fs.readFileSync(filePath, 'utf8');
+        return fs.readFileSync(filePath, 'UTF-8');
     }
 
     public static toFile(filePath: string, code: string): void {
         FileUtil.makeDirectoriesRecursive(filePath);
-        fs.writeFileSync(filePath, code, 'utf8');
+        fs.writeFileSync(filePath, code, 'UTF-8');
     }
 
     public static getOutputFilePath(filePath: string): string {

@@ -2,7 +2,6 @@
 
 // import * as inquirer from 'inquirer';
 import chalk from 'chalk';
-import glob from'glob';
 import * as path from 'path';
 
 import { CliArguments } from './interfaces/cliArguments';
@@ -12,10 +11,12 @@ import { Route } from './types/route';
 const argv: CliArguments = require('yargs')
     .option('path', {
         alias: 'p',
+        array: true,
         describe: 'Provide a glob to the file path with the route in quotes.',
     })
     .option('name', {
         alias: 'n',
+        array: true,
         describe: 'Specify the route name to upgrade in quotes',
     })
     .help('h')
@@ -35,7 +36,7 @@ if (!argv.path || !argv.name) {
 //     });
 
 /* Process A Whole Route including the Component and Template */
-const filePaths: string[] = glob.sync(path.join(process.cwd(), argv.path));
+const filePaths: string[] = argv.path.map((filePath: string) => path.join(process.cwd(), filePath));
 
 filePaths.forEach((filePath: string, index: number) => {
     const routeName: string = argv.name[index];
