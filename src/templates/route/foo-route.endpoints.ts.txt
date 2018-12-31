@@ -1,0 +1,14 @@
+import { Injectable } from '@angular/core';
+
+@Injectable()
+export class FooEndpointsService {
+    public BASE: string = '/rest';
+
+    public get(): string {
+        return `${this.BASE}/foo`;
+    }
+
+    public exportTable(): string {
+        return `${this.BASE}/foo`;
+    }
+}

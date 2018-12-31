@@ -1,0 +1,104 @@
+import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+import {
+    AgConfigInterface,
+    HTTPService,
+    IAutocompleteResponse,
+    IExportResult,
+    IOption,
+    IQueryParams,
+    ISchema,
+    ITableColumnModel,
+    ITableFilterModel,
+    ITableFilterModelItem,
+    ITableSortModel,
+    QueryService,
+} from '@ghx/ui-core';
+
+import { FooTableConfig } from './foo-table-config.service';
+import { IFilterQuery } from '../../../Search/interfaces/services/account.interface';
+import { FooEndpointsService } from './foo.endpoints';
+
+@Injectable()
+export class FooService {
+
+    constructor(
+        private fooRestService: FooRestService,
+        private fooEndpointsService: FooEndpointsService,
+        private endpointsService: FooEndpointsService,
+        private tableConfig: FooTableConfig,
+        private queryService: QueryService,
+        private httpService: HTTPService,
+    ) { }
+
+    public buildQueryParams(filterModel: ITableFilterModel,
+                            sortModel: ITableSortModel[],
+                            pageNum: number,
+                            pageSize: number,
+                            searchQuery: string): IFilterQuery {
+        const order: IQueryParams = this.queryService.getSortQuery(sortModel);
+        let schemas: ISchema[][];
+
+        if (searchQuery) {
+            schemas = this.queryService.mapFilterQueryToSchemas(searchQuery, this.tableConfig.basicFilterFields, this.tableConfig.getAGOptions());
+        } else {
+            schemas = this.queryService.mapFilterModelToSchemas(filterModel);
+        }
+
+        schemas = schemas.filter((schema: ISchema[]) => schema.length);
+
+        const queryParams: IFilterQuery = {
+            pageNum,
+            pageSize,
+            ...order,
+        };
+
+        if (schemas.length) {
+            queryParams.filterQuery = (searchQuery) ? this.queryService.getFilterQuery(schemas, this.queryService.conditions.or) :
+                this.queryService.getFilterQuery(schemas);
+        }
+
+        return queryParams;
+    }
+
+    public getTableData = (filterModel: ITableFilterModel,
+                           sortModel: ITableSortModel[],
+                           pageNum: number,
+                           pageSize: number,
+                           searchQuery: string): Observable<ITableDataAllInOneResponse> => {
+        const queryParams: IFilterQuery = this.buildQueryParams(filterModel, sortModel, pageNum, pageSize, searchQuery);
+
+        return this.http.get(this.endpointsService.getRequests(), queryParams)
+            .pipe(
+                map((response: ITableDataAllInOneResponse) => {
+                    response.items = this.processRequests(response.items);
+
+                    return response;
+                }));
+    };
+
+
+    public exportTable = (filterModel: ITableFilterModel,
+                          sortModel: ITableSortModel[],
+                          columnsModel: ITableColumnModel[],
+                          searchQuery: string): Observable<IExportResult> => {
+        const queryParams: IFilterQuery = this.buildQueryParams(filterModel, sortModel, 0, 0, searchQuery);
+
+        const processedColumnsModel: ITableColumnModel[] =
+            columnsModel.filter((columnModel: ITableColumnModel) => columnModel.colId !== '_checkbox');
+
+        const colDefs: AgConfigInterface[] = this.tableConfig.getAGOptions().columnDefs;
+        const exportColumnConfig: { name: string, displayName: string }[] =
+            processedColumnsModel.map((columnModel: ITableColumnModel) => {
+                return {
+                    name: columnModel.colId,
+                    displayName: colDefs.find((colDef: AgConfigInterface) => colDef.field === columnModel.colId).headerName,
+                };
+            });
+
+        return this.http.post<IExportResult>(this.endpointsService.exportTable(), { columns: exportColumnConfig }, queryParams);
+    }
+
+}

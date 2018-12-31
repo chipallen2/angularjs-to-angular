@@ -1,0 +1,114 @@
+import { HttpErrorResponse } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import {
+    IExportResult,
+    IPageWithTableActionTypes,
+    ITableColumnModel,
+    ITableDataAllInOneResponse,
+    ITableFilterModel,
+    ITableSortModel,
+    LocalizationService,
+    NotificationsService,
+    PageWithTableEffects,
+    TableService,
+} from '@ghx/ui-core';
+import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Action, Store } from '@ngrx/store';
+
+import { Observable, of } from 'rxjs';
+import { catchError, map, mapTo, switchMap, withLatestFrom } from 'rxjs/operators';
+
+import { FooTableConfig } from '../foo-route.config';
+import {
+    IFooRouteState,
+    IFooRequest,
+    FooRouteActionTypesEnum,
+} from '../foo-route.interface';
+import { FooService } from '../foo-route.service';
+import {
+    ApproveOne,
+    ApproveOneFailed,
+    ApproveSelectedFailed,
+    FooRouteActions,
+    fooActions,
+} from './actions';
+import { FooRouteSelectors } from './selectors';
+
+@Injectable()
+export class FooRouteTableEffects extends PageWithTableEffects<FooRouteSelectors,
+    FooRouteActions,
+    IFooRouteState,
+    IPageWithTableActionTypes,
+    IFooRequest> {
+
+    constructor(
+        selectors: FooRouteSelectors,
+        tableConfig: FooTableConfig,
+        tableService: TableService,
+        store$: Store<any>,
+        actions$: Actions,
+        localization: LocalizationService,
+        notifications: NotificationsService,
+    ) {
+        super(selectors, fooActions, tableConfig, tableService, store$, actions$, localization, notifications);
+    }
+}
+
+@Injectable()
+export class FooRouteEffects {
+    constructor(
+        private fooService: FooService,
+        private fooRouteSelectors: FooRouteSelectors,
+        private store$: Store<any>,
+        private actions$: Actions,
+        private notifications: NotificationsService,
+    ) { }
+
+    @Effect() public loadTableData$: Observable<Action> = this.actions$.pipe(
+        ofType(fooActions.actionTypes.LOAD_TABLE_DATA),
+        withLatestFrom(
+            this.store$.select(this.fooRouteSelectors.getFilterModel),
+            this.store$.select(this.fooRouteSelectors.getSortModel),
+            this.store$.select(this.fooRouteSelectors.getPageNum),
+            this.store$.select(this.fooRouteSelectors.getPageSize),
+            this.store$.select(this.fooRouteSelectors.getSearchQuery),
+        ),
+        switchMap(([, filterModel, sortModel, pageNum, pageSize, searchQuery]: [any, ITableFilterModel, ITableSortModel[], number, number, string]) =>
+            this.fooService.getTableData(filterModel, sortModel, pageNum, pageSize, searchQuery).pipe(
+                switchMap((response: ITableDataAllInOneResponse) => [
+                    fooActions.tableDataLoaded({ tableData: response.items }),
+                    fooActions.setTotalCount({ totalCount: response.totalCount }),
+                ]),
+                catchError((response: HttpErrorResponse) =>
+                    of(fooActions.tableDataLoadingFailed({ message: response.message }))),
+            ),
+        ),
+    );
+
+    @Effect() public foo$: Observable<Action> = this.actions$.pipe(
+        ofType(FooRouteActionTypesEnum.FOO),
+        switchMap((action: Foo) =>
+            this.fooService.foo(action.payload).pipe(
+                mapTo(fooActions.loadTableData()),
+                catchError((response: HttpErrorResponse) =>
+                    of(new FooFailed({ message: response.message }))),
+            )),
+    );
+
+    @Effect() public exportTable$: Observable<Action> = this.actions$.pipe(
+        ofType(fooActions.actionTypes.EXPORT_TABLE),
+        withLatestFrom(
+            this.store$.select(this.fooRouteSelectors.getFilterModel),
+            this.store$.select(this.fooRouteSelectors.getSortModel),
+            this.store$.select(this.fooRouteSelectors.getColumnsModel),
+            this.store$.select(this.fooRouteSelectors.getSearchQuery),
+        ),
+        switchMap(([, filterModel, sortModel, columnsModel, searchQuery]: [any, ITableFilterModel, ITableSortModel[], ITableColumnModel[], string]) =>
+            this.fooService.exportTable(filterModel, sortModel, columnsModel, searchQuery).pipe(
+                map((exportResult: IExportResult) => fooActions.exportTableSucceeded({ exportResult })),
+                catchError((error: HttpErrorResponse) => of(fooActions.exportTableFailed({ message: error.message }))),
+            ),
+        ),
+    );
+
+}

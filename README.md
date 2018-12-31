@@ -4,33 +4,66 @@ CLI that takes in angularjs files and outputs angular.
 ## Getting Started ##
 
 ### 1 - Run the following to install the project. ###
+NOTE: `npm link @ghx/ui-core` links your local version of @ghx/ui-core instead of the online one. 
+But you need to run `npm link` from the @ghx/ui-core folder first. 
 
 ```
-git clone git@github.com:chipallen2/angularjs-to-angular.git 
 cd angularjs-to-angular 
+npm config set @ghx:registry https://ghxrepo.jfrog.io/ghxrepo/api/npm/ghx-npm/
 npm install
-npm i -g npx
+npm link @ghx/ui-core
 ```
 
-### 2 - Link this project to your AngularJS app ###
+### 2 - Build and Link this project to your AngularJS app ###
 
 You will make an npm link from the cli folder to your
 angular.js project.
 
 ```
 cd angularjs-to-angular 
+npm run build
 npm link 
 cd all/ui-heimdall
 npm link angularjs-to-angular
 ```
 
-Now in your angular.js app run ts-node commands and your new source code will be available the upgrade directory
+### 3 - Run It ###
 
-Example: `npx ts-node ./node_modules/.bin/angularjs-to-angular -p="src/main/webapp/app/heimdall/setup/endpoints/endpoints.js" -n="/setup/endpoints"`
-Example: `npx ts-node ./node_modules/angularjs-to-angular/index.ts -p="src/main/webapp/app/heimdall/setup/endpoints/endpoints.js" -n="/setup/endpoints"`
-./node_modules/.bin/angularjs-to-angular -p="src/main/webapp/app/heimdall/setup/endpoints/endpoints.js" -n="/setup/endpoints"
-npm link angularjs-to-angular && ./node_modules/.bin/angularjs-to-angular -p="src/main/webapp/app/heimdall/setup/endpoints/endpoints.js" -n="/setup/endpoints"
+Now in your angular.js app run the built javascript code and your new source code will be available the upgrade directory. 
+The `-p` parameter is the path to the route file.
+The `-n` parameter is the name of the route to convert.
 
+Example To Convert a Route (from the `/all/ui-heimdall` folder): 
+
+```
+For debugging:
+> node $NODE_DEBUG_OPTION ./node_modules/.bin/angularjs-to-angular -p="src/main/webapp/app/heimdall/setup/endpoints/endpoints.js" -n="/setup/endpoints"
+
+For real
+> node ./node_modules/.bin/angularjs-to-angular -p="src/main/webapp/app/heimdall/setup/endpoints/endpoints.js" -n="/setup/endpoints"
+```
+
+The converted code will be available in the `/all/ui-heimdall/upgrade` folder
+
+ ## Debugging The Script Locally ## 
+ The best way to debug the script is using intellij. 
+ You will create a debug configuration in intellij for npm and then you can set breakpoints to debug live. 
+ 
+ - Make sure you did the npm link steps in the getting started. 
+ - Inside the angularjs application add a script like the following to the package.json (for example edit all/ui-heimdall/package.json). Change the arguments to the ones you want. `"angularJsToAngular": "node $NODE_DEBUG_OPTION ./node_modules/.bin/angularjs-to-angular -r=\"<FILE >\""` 
+ - Note the `node $NODE_DEBUG_OPTION` part at the front - this allows node to go into debug mode. 
+ - Now create a new build configuration in intellij > choose NPM. Change the following settings 
+    - Package.json > select the package.json 
+    - Command > leave at `run` 
+    - Script > choose `angularJsToAngular` 
+    - Leave the rest alone and Hit OK 
+ - Now just choose debug in intellij and you can add breakpoints and debug like normal. 
+ 
+NOTE: You have to run `npm run build` (in the angularjs to angular project) to compile the typescript after you make a change before running the debug in the heimdall app.
+
+To aid in debugging you can paste the same file into https://astexplorer.net/ and choose Typescript as the compiler to view the AST easily.
+
+## OLD BELOW HERE - NEEDS TO BE REWRITTEN ##
 
 ## How It Works ##
 
@@ -79,19 +112,3 @@ paths.
  - This will convert the test template files under tests/data/ and output to upgrade/ 
  - Run > `npm test` 
  - Executes the unit tests using AvaJS 
- 
- ## Debugging The Script Locally ## 
- The best way to debug the script is using intellij. 
- You will create a debug configuration in intellij for npm and then you can set breakpoints to debug live. 
- 
- - Make sure you did the npm link steps in the getting started. 
- - Inside the angularjs application add a script like the following to the package.json (for example edit all/ui-heimdall/package.json). Change the arguments to the ones you want. `"angularJsToAngular": "node $NODE_DEBUG_OPTION ./node_modules/.bin/angularjs-to-angular -r=\"<FILE >\""` 
- - Note the `node $NODE_DEBUG_OPTION` part at the front - this allows node to go into debug mode. 
- - Now create a new build configuration in intellij > choose NPM. Change the following settings 
-    - Package.json > select the package.json 
-    - Command > leave at `run` 
-    - Script > choose `angularJsToAngular` 
-    - Leave the rest alone and Hit OK 
- - Now just choose debug in intellij and you can add breakpoints and debug like normal. 
-
-To aid in debugging you can paste the same file into https://astexplorer.net/ and choose Typescript as the compiler to view the AST easily.

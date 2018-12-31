@@ -1,9 +1,7 @@
-import * as q from '@phenomnomnominal/tsquery';
 import * as fs from 'fs';
 import * as path from 'path';
-import { SourceFile } from 'typescript';
 
-import { ISourceFileMap, IStringMap } from '../interfaces/generics';
+import { IStringMap } from '../interfaces/generics';
 
 /**
  * Uses an instance to store local data and avoid re-querying the same information later.
@@ -20,8 +18,8 @@ export class HeimdallUtil {
     private angularjsScriptFiles: IStringMap = {};
 
     //Loaded lazily
-    private controllers: ISourceFileMap = {};
-    private services: ISourceFileMap = {};
+    private controllers: IStringMap = {};
+    // private services: IStringMap = {};
 
     constructor() {
         if (!this.populateAllRepoPath()) return;
@@ -59,17 +57,21 @@ export class HeimdallUtil {
         );
     }
 
-    public getController(name: string): SourceFile | undefined {
+    public getControllerPath(name: string): string | undefined {
         if (this.controllers[name]) return this.controllers[name];
 
         const regex: RegExp = new RegExp(`controller\\(\\s?'${name}'\\s?,`);
-        const file: string | undefined = Object.values(this.angularjsScriptFiles).find((file: string) => regex.test(file));
-        if (!file) return undefined;
 
-        const ast: SourceFile = q.tsquery.ast(file);
-        this.controllers[name] = ast;
+        const filePathIndex : number = Object.values(this.angularjsScriptFiles).findIndex((file: string) => regex.test(file));
+        if (filePathIndex === -1) return undefined;
 
-        return ast;
+        this.controllers[name] = Object.keys(this.angularjsScriptFiles)[filePathIndex];
+
+        return this.controllers[name];
+    }
+
+    public getTemplatePath(filePrefix: string): string {
+        return `${this.allRepoPath}/ui-heimdall/src/main/webapp/app/${filePrefix}`;
     }
 
     public populateAllRepoPath(): boolean {

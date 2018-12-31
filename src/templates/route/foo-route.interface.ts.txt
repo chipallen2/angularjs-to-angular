@@ -1,0 +1,13 @@
+import { IPageWithTableState } from '@ghx/ui-core';
+
+export interface IFooRouteState extends IPageWithTableState<IProcessedAccountRequest> {
+}
+
+export enum FooRouteActionTypesEnum {
+    FOO = '[foo-route] Foo',
+}
+
+export interface IFooRequest {
+    id: number;
+    [propName: string]: any;
+}

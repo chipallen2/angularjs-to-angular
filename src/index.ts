@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-// import * as inquirer from 'inquirer';
 import chalk from 'chalk';
 import * as path from 'path';
 
@@ -8,6 +7,7 @@ import { CliArguments } from './interfaces/cliArguments';
 import './polyfills';
 import { Route } from './types/route';
 
+// noinspection TypeScriptValidateJSTypes
 const argv: CliArguments = require('yargs')
     .option('path', {
         alias: 'p',
@@ -28,20 +28,12 @@ if (!argv.path || !argv.name) {
     process.exit(1);
 }
 
-// Save for later if we need to prompt
-// inquirer.prompt([{ name: 'something', message: 'Do you like this' }])
-//     .then((answer) => {
-//         console.log(answer.something);
-//         process.exit(9);
-//     });
-
 /* Process A Whole Route including the Component and Template */
 const filePaths: string[] = argv.path.map((filePath: string) => path.join(process.cwd(), filePath));
 
 filePaths.forEach((filePath: string, index: number) => {
     const routeName: string = argv.name[index];
 
-    // @ts-ignore
     const route: Route = (new Route(filePath));
     route.setRouteName(routeName);
     route

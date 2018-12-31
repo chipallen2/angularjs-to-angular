@@ -1,0 +1,102 @@
+import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+
+import {
+    AgOptionsInterface,
+    GenericDialogService,
+    IAgGridActions,
+    IBreadCrumbsState,
+    IDropdownAction,
+    LocalizationService,
+} from '@ghx/ui-core';
+
+import { NavigationActionTypes } from 'src/app/reducers/navigation.reducer';
+import { FooRouteTableOperationsService } from './foo-route-table-operations.service';
+import { FooTableConfig } from './foo-route.config';
+import { IFooRequest } from './foo-route.interface';
+import { Foo } from './store/actions';
+
+@Component({
+    templateUrl: './view.html',
+})
+export class FooRouteComponent implements OnInit {
+    public options: AgOptionsInterface = {
+        ...this.config.getAGOptions(),
+    };
+
+    public topActions: IAgGridActions = {
+        clearFilters: true,
+        refresh: true,
+        export: true,
+    };
+
+    public dropdownActions: IDropdownAction[];
+
+    private selected: IFooRequest[];
+
+    constructor(
+        public tableActions: FooRouteTableOperationsService,
+        private genericDialogService: GenericDialogService,
+        private localization: LocalizationService,
+        private config: FooTableConfig,
+        private store: Store<any>,
+    ) {
+        this.tableActions.selected$.subscribe((selected: IFooRequest[]) => {
+            this.selected = selected;
+            this.dropdownActions = this.getDropdownActions(selected);
+        });
+    }
+
+    private navigationState: IBreadCrumbsState = {
+        id: Math.random(),
+        level: 2,
+        title: 'Foo',
+        href: '/foo',
+    };
+
+    public ngOnInit(): void {
+        this.store.dispatch({
+            type: NavigationActionTypes.ADD_RENDERED_COMPONENT,
+            payload: this.navigationState,
+        });
+
+        this.tableActions.initialize();
+    }
+
+    public ngOnDestroy(): void {
+        this.store.dispatch({
+            type: NavigationActionTypes.REMOVE_RENDERED_COMPONENT,
+            payload: this.navigationState,
+        });
+    }
+
+    public dropdownActionApplied(type: string): void {
+        switch (type) {
+            case 'foo':
+                this.openFooDialog()
+                    .afterClosed()
+                    .subscribe((isSuccess: boolean | undefined) => {
+                        if (isSuccess) {
+                            this.tableActions.refresh();
+                        }
+                    });
+
+                return;
+
+            default:
+                return;
+        }
+    }
+
+    public getDropdownActions(selected: IFooRequest[]): IDropdownAction[] {
+        return [
+            {
+                id: 'foo',
+                icon: 'mdi-check',
+                type: 'foo', //correlates to the switch key in dropdownActionApplied
+                label: this.localization.getValue('foo'),
+                disabled: !selected.length, //set to false to always show it
+            },
+        ];
+    }
+}

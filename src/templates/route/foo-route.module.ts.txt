@@ -1,0 +1,48 @@
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
+
+import {
+    AgGridTopActionsModule,
+    CoreModule,
+} from '@ghx/ui-core';
+
+import { FooTableConfig } from './foo-route.config';
+import { FooModuleStoreNames } from './foo-store-names';
+import { FooEndpointsService } from './foo-route.endpoints';
+import { FooRouteComponent } from './foo-route.component';
+import { FooRouteOperations } from './foo-route.operations';
+import { FooService } from './foo-route.service';
+import { fooReducer } from './store';
+import { FooRouteActions } from './store/actions';
+import { FooRouteEffects, FooRouteTableEffects } from './store/effects';
+import { FooRouteSelectors } from './store/selectors';
+
+@NgModule({
+    imports: [
+        AgGridTopActionsModule,
+        CommonModule,
+        CoreModule,
+        RouterModule,
+        EffectsModule.forFeature([FooRouteTableEffects, FooRouteEffects]),
+        StoreModule.forFeature(FooModuleStoreNames.FooRoute, fooReducer),
+    ],
+    exports: [
+        FooRouteComponent,
+    ],
+    declarations: [
+        FooRouteComponent,
+    ],
+    providers: [
+        FooEndpointsService,
+        FooRouteActions,
+        FooRouteOperations,
+        FooRouteSelectors,
+        FooTableConfig,
+        FooService,
+    ],
+})
+export class FooRouteModule {
+}

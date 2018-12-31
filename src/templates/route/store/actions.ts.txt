@@ -1,0 +1,23 @@
+import { IPageWithTableActionTypes, PageWithTableActions } from '@ghx/ui-core';
+import { Action } from '@ngrx/store';
+
+import { FooStoreNames } from '../foo-store-names';
+import { IProcessedAccountRequest, FooRouteActionTypesEnum } from '../foo-page.interface';
+
+export class FooRouteActions extends PageWithTableActions<IPageWithTableActionTypes, IProcessedAccountRequest> {
+    constructor() {
+        super(FooStoreNames.Foo);
+    }
+}
+
+export const fooGhxActions: FooRouteActions = new FooRouteActions();
+
+export class Foo implements Action {
+    public readonly type: FooRouteActionTypesEnum.FOO = FooRouteActionTypesEnum.FOO;
+
+    constructor(public payload: {id: number}) { }
+
+}
+
+export type FooActionsUnion =
+    | Foo;

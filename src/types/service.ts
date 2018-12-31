@@ -7,7 +7,7 @@ export class Service extends IAngularType {
         return this;
     }
 
-    public parse(): void {
+    protected parse(): void {
         //TODO: fill out
     }
 

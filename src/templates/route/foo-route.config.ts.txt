@@ -1,0 +1,54 @@
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+
+import {
+    AgConfigInterface,
+    AgDefaultOptionsService,
+    AgOptionsInterface,
+    ITableConfig,
+    ITableStoreNames,
+    LocalizationService,
+} from '@ghx/ui-core';
+
+import { OdinTableHelperService } from '../services/odin-table-helper.service';
+
+@Injectable()
+export class FooTableConfig implements ITableConfig {
+    public storeNames: ITableStoreNames = {
+        columns: 'foo_table_config',
+        sorting: 'foo_table_sort',
+        filter: 'foo_table_filter',
+    };
+
+    public basicFilterFields: string[] = [];
+
+    public config: AgConfigInterface[] = [
+        this.agDefaultOptionsService.getCheckboxColDef(),
+        {
+            headerName: this.localization.getValue('label.name'),
+            field: 'name',
+        },
+    ];
+
+    private readonly context: any;
+
+    constructor(
+        private agDefaultOptionsService: AgDefaultOptionsService,
+        private localization: LocalizationService,
+        private odinTableHelperService: OdinTableHelperService,
+        private router: Router,
+    ) {
+        this.context = {
+            componentParent: this,
+        };
+    }
+
+    public getAGOptions = (): AgOptionsInterface => {
+        return {
+            ...this.agDefaultOptionsService.getDefaultOptions(this.context, this.storeNames),
+            columnDefs: [...this.config],
+            storeNames: this.storeNames,
+            rowSelection: 'multiple',
+        };
+    }
+}

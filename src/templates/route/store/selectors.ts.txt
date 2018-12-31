@@ -1,0 +1,12 @@
+import { Injectable } from '@angular/core';
+import { PageWithTableSelectors } from '@ghx/ui-core';
+
+import { FooStoreNames } from '../../../foo-store-names';
+import { IFooRouteState, IProcessedAccountRequest } from './../foo-route.interface';
+
+@Injectable()
+export class FooRouteSelectors extends PageWithTableSelectors<IFooRouteState, IProcessedAccountRequest> {
+    constructor() {
+        super(FooStoreNames.Foo);
+    }
+}

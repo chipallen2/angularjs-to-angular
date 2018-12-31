@@ -7,7 +7,7 @@ export class Style extends IAngularType {
         return this;
     }
 
-    public parse(): void {
+    protected parse(): void {
         //TODO: fill out
     }
 

@@ -1,10 +1,12 @@
 import * as q from '@phenomnomnominal/tsquery';
 import * as ts from 'typescript';
+
 import { FileUtil } from '../utils/fileUtil';
+import {TsQueryUtil} from "../utils/tsQueryUtil";
 
 export abstract class IAngularType {
 
-    protected filePath: string;
+    public filePath: string;
     protected originalAst: ts.SourceFile;
     protected ast: ts.SourceFile;
 
@@ -29,11 +31,7 @@ export abstract class IAngularType {
      * Convert the AST back into normal code
      */
     public toCode(): string {
-        const printer: ts.Printer = ts.createPrinter({
-            newLine: ts.NewLineKind.LineFeed,
-        });
-
-        return printer.printFile(this.ast);
+        return TsQueryUtil.sourceFileToString(this.ast);
     }
 
     /**

@@ -1,0 +1,52 @@
+<div class="root">
+    <div class="root-content">
+        <div class="root-content-table top-actions-padding">
+            <ag-grid-top-actions
+                id="fooTopActions"
+                [actions]="topActions"
+                [options]="options"
+                [columnsModel]="tableActions.columnsModel$ | async"
+                [isOverlayActive]="tableActions.loading$ | async"
+                [showSelectedCount]="true"
+                [selectedCount]="tableActions.selectedCount$ | async"
+                [pagination]="tableActions.pagination$ | async"
+                [enableSearchQuery]="true"
+                [searchQuery]="tableActions.searchQuery$ | async"
+                [areFiltersEmpty]="tableActions.areFiltersEmpty$ | async"
+                [dropdownActions]="dropdownActions"
+                [isEligibleChecked]="tableActions.isEligibleChecked$ | async"
+                [exportDisabled]="!(tableActions.tableData$ | async).length"
+                [disableCreateNewOrg]="isDisabledSelectedOrg(selectedOrgs)"
+                [showCreateNewOrg]="true"
+                [lastRefreshDate]="tableActions.lastRefreshDate$ | async"
+                (nextPage)="tableActions.nextPage()"
+                (prevPage)="tableActions.prevPage()"
+                (pageSizeChanged)="tableActions.pageSizeChanged($event)"
+                (clearFilters)="tableActions.clearFilters()"
+                (refresh)="tableActions.refresh()"
+                (searchQueryChanged)="tableActions.searchQueryChanged($event)"
+                (dropdownActionApplied)="dropdownActionApplied($event, selectedOrgs, organization)"
+                (isEligibleToggle)="tableActions.toggleEligible()"
+                (export)="tableActions.exportTable()"
+            >
+            </ag-grid-top-actions>
+            <ag-grid-table
+                id="fooTable"
+                [options]="options"
+                [rowData]="tableActions.tableData$ | async"
+                [filterModel]="tableActions.filterModel$ | async"
+                [sortModel]="tableActions.sortModel$ | async"
+                [columnsModel]="tableActions.columnsModel$ | async"
+                [selected]="tableActions.selected$ | async"
+                [loading]="tableActions.loading$ | async"
+                [hideFilters]="!!(tableActions.searchQuery$ | async)"
+                (filterChanged)="tableActions.filterChanged($event)"
+                (sortChanged)="tableActions.sortChanged($event)"
+                (columnsChanged)="tableActions.columnsChanged($event)"
+                (selectedChanged)="tableActions.selectedChanged($event)"
+                (columnDefsChanged)="tableActions.columnDefsChanged($event)"
+            >
+            </ag-grid-table>
+        </div>
+    </div>
+</div>

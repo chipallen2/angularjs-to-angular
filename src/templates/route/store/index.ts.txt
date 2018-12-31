@@ -1,0 +1,26 @@
+import { defaultInitialPageWithTableState, pageWithTableReducerFactory } from '@ghx/ui-core';
+import { ActionReducer } from '@ngrx/store';
+
+import { IFooRouteState, FooRouteActionTypesEnum } from '../foo-route.interface';
+import { FooActionsUnion, fooActions } from './actions';
+
+const fooTableReducer: ActionReducer<IFooRouteState, any> = pageWithTableReducerFactory(defaultInitialPageWithTableState, fooActions);
+
+export const fooRouteReducer: ActionReducer<IFooRouteState, FooActionsUnion> = (
+    state: IFooRouteState = defaultInitialPageWithTableState,
+    action: FooActionsUnion,
+): IFooRouteState => {
+    switch (action.type) {
+        case FooRouteActionTypesEnum.FOO:
+            return {
+                ...state,
+                tableInfo: {
+                    ...state.tableInfo,
+                    loading: true,
+                },
+            };
+
+        default:
+            return fooTableReducer(state, action);
+    }
+};
